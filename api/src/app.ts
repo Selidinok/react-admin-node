@@ -3,6 +3,9 @@ import mongoose from 'mongoose'
 import dotenv from 'dotenv'
 import nodemon from 'nodemon'
 import bodyParser from 'body-parser'
+import redis from 'redis'
+import session from 'express-session'
+import connect from 'connect-redis'
 
 const app = express()
 dotenv.config()
@@ -22,6 +25,20 @@ mongoose.connect(MONGO_URL || "", { useNewUrlParser: true })
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
+
+const redisStore = connect(session)
+const redisClient = redis.createClient({host: "redis", port: 6379})
+
+app.use(
+    session({
+        store: new redisStore({
+            client: redisClient
+        }),
+        secret: process.env.REDIS_SECRET || "",
+        resave: false
+    })
+)
+
 
 app.get('/', (req, res) => {
     console.log("New requset: ", req)
