@@ -3,8 +3,8 @@ services:
   api:
     restart: always
     build: ./api
-    volumes: 
-      - ./api:/usr/src/app/api
+    # volumes: 
+    #   - ./api:/usr/src/app/api
     ports:
       - "3023:3023"
     links:

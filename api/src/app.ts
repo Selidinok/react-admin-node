@@ -6,6 +6,8 @@ import bodyParser from 'body-parser'
 import redis from 'redis'
 import session from 'express-session'
 import connect from 'connect-redis'
+import { User, UserDocument } from './model/User'
+import { getUsers } from './controllers/user'
 
 const app = express()
 dotenv.config()
@@ -39,6 +41,13 @@ app.use(
     })
 )
 
+const user1 = new User({
+    email: "some@email.com",
+    password: "password",
+    firstName: "Sam",
+    lastName: "Smith"
+})
+user1.save()
 
 app.get('/', (req, res) => {
     console.log("New requset: ", req)
@@ -49,5 +58,8 @@ app.get('/home', (req, res) => {
     console.log("New requset: ", req)
     res.status(200).send({"test": "js"})
 })
+
+
+app.get('/users', getUsers)
 
 export default app
